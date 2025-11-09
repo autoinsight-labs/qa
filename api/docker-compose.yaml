@@ -1,0 +1,10 @@
+services:
+  postgres:
+    image: postgres:18
+    container_name: autoinsight
+    environment:
+      POSTGRES_DB: autoinsight
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: docker
+    ports:
+      - "5432:5432"

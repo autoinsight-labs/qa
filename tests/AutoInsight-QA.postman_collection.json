@@ -1,0 +1,353 @@
+{
+	"info": {
+		"_postman_id": "624bb8df-4ad6-4703-a311-7371ea089208",
+		"name": "AutoInsight QA Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "35354567"
+	},
+	"item": [
+		{
+			"name": "Criar pátio",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status 201 or 200\", () => {",
+							"  pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"});",
+							"",
+							"const json = pm.response.json();",
+							"",
+							"pm.test(\"Response has yard id\", () => {",
+							"  pm.expect(json).to.have.property(\"id\");",
+							"});",
+							"",
+							"pm.test(\"Yard has correct capacity\", () => {",
+							"  pm.expect(json.capacity).to.eql(120);",
+							"});",
+							"",
+							"pm.environment.set(\"yardId\", json.id);"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Yard QA\",\n  \"ownerName\": \"Guilherme Maggiorini\",\n  \"capacity\": 120\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/v2/yards",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v2",
+						"yards"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Criar convite",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Invite created successfully\", () => {",
+							"  pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"});",
+							"",
+							"const invite = pm.response.json();",
+							"pm.expect(invite).to.have.property(\"id\");",
+							"pm.expect(invite.status).to.eql(\"Pending\");",
+							"",
+							"pm.environment.set(\"inviteId\", invite.id);"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"testegui2@gmail.com\",\n  \"role\": \"Member\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/v2/yards/{{yardId}}/invites",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v2",
+						"yards",
+						"{{yardId}}",
+						"invites"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Aceitar convite",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Invite accepted successfully\", () => {",
+							"  pm.expect(pm.response.code).to.equal(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"John Doe\",\n  \"imageUrl\": \"https://cdn.example.com/avatar.png\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/v2/invites/{{inviteId}}/accept",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v2",
+						"invites",
+						"{{inviteId}}",
+						"accept"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Criar veículo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Vehicle created successfully\", () => {",
+							"  pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"});",
+							"",
+							"const v = pm.response.json();",
+							"pm.expect(v).to.have.property(\"id\");",
+							"pm.expect(v.status).to.be.oneOf([\"Waiting\", \"Scheduled\"]);",
+							"",
+							"pm.environment.set(\"vehicleId\", v.id);"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"plate\": \"ABC1D23\",\n  \"model\": \"MottuSport110i\",\n  \"beacon\": {\n    \"uuid\": \"FDA50693-A4E2-4FB1-AFCF-C6EB07647826\",\n    \"major\": \"10168\",\n    \"minor\": \"61959\"\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/v2/yards/{{yardId}}/vehicles",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v2",
+						"yards",
+						"{{yardId}}",
+						"vehicles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Finalizar veículo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Vehicle updated successfully\", () => {",
+							"  pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"const v = pm.response.json();",
+							"pm.test(\"Vehicle finished\", () => {",
+							"  pm.expect(v.status).to.eql(\"Finished\");",
+							"  pm.expect(v.leftAt).to.not.be.null;",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"status\": \"Finished\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/v2/yards/{{yardId}}/vehicles/{{vehicleId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v2",
+						"yards",
+						"{{yardId}}",
+						"vehicles",
+						"{{vehicleId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Forecast de capacidade",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Forecast retrieved\", () => {",
+							"  pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"const json = pm.response.json();",
+							"",
+							"pm.test(\"Forecast contains points array\", () => {",
+							"  pm.expect(json).to.have.property(\"points\");",
+							"  pm.expect(json.points).to.be.an(\"array\").that.is.not.empty;",
+							"});",
+							"",
+							"pm.test(\"Each point has occupancyRatio\", () => {",
+							"  json.points.forEach(p => {",
+							"    pm.expect(p).to.have.property(\"occupancyRatio\");",
+							"  });",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/v2/yards/{{yardId}}/capacity-forecast?horizonHours=12",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v2",
+						"yards",
+						"{{yardId}}",
+						"capacity-forecast"
+					],
+					"query": [
+						{
+							"key": "horizonHours",
+							"value": "12"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjU0NTEzMjA5OWFkNmJmNjEzODJiNmI0Y2RlOWEyZGZlZDhjYjMwZjAiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vYXV0b2luc2lnaHQtNmYxZjkiLCJhdWQiOiJhdXRvaW5zaWdodC02ZjFmOSIsImF1dGhfdGltZSI6MTc2MjI3NzMwMiwidXNlcl9pZCI6IldQNlptNFBGUjFTWktoV3JsMko3VVFKVlNrdDIiLCJzdWIiOiJXUDZabTRQRlIxU1pLaFdybDJKN1VRSlZTa3QyIiwiaWF0IjoxNzYyMjc3MzAyLCJleHAiOjE3NjIyODA5MDIsImVtYWlsIjoidGVzdGVndWkyQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJ0ZXN0ZWd1aTJAZ21haWwuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.gH1ndt58JeYue6zUs8lYdRHKo1MD7r30h2o-BFIx3wDM5SHGOv5e2lGIBR1YhFG0VZJ0NX8gZGQPPwjl_1LB6Mk1jC4ruxmNd7syRsHfK8OLJ17MB7FaKd1HYhvm_Uvng1Z7UvZsaNl528V8yElVrxuFZ8lcKNspqYkBiShoE4HGKDM86FmaZ1Bx6CTBbR8d5eZdZ2TysQlqOZswkm7kqvJxBFZjTjSZ8vvwf6BzHH7pvxvU8h7H8C5AXnlyrxwCLljNdI-Jpx7IUPybG0JoRXIVb67z0Q3Cg6bCOFmjoOJ5Er-uhAjlUiZKLOB1P_xS4-JW3b4psVXHCHjdD7VAOw",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": ""
+		}
+	]
+}

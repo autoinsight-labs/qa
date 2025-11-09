@@ -1,0 +1,1 @@
+namespace AutoInsight.EmployeeInvites.Reject;
